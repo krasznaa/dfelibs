@@ -130,13 +130,13 @@ inline NamedTupleRootWriter<NamedTuple>::NamedTupleRootWriter(
   const std::string& path, const std::string& tree_name)
   : m_file(new TFile(path.c_str(), "RECREATE"))
   , m_tree(new TTree(tree_name.c_str(), "", 99, m_file)) {
-  if (not m_file) {
+  if (!m_file) {
     throw std::runtime_error("Could not create file");
   }
-  if (not m_file->IsOpen()) {
+  if (!m_file->IsOpen()) {
     throw std::runtime_error("Could not open file");
   }
-  if (not m_tree) {
+  if (!m_tree) {
     throw std::runtime_error("Could not create tree");
   }
   setup_branches(std::make_index_sequence<std::tuple_size<Tuple>::value>());
@@ -147,10 +147,10 @@ inline NamedTupleRootWriter<NamedTuple>::NamedTupleRootWriter(
   TDirectory* dir, const std::string& tree_name)
   : m_file(nullptr) // no file since it is not owned by the writer
   , m_tree(new TTree(tree_name.c_str(), "", 99, dir)) {
-  if (not dir) {
+  if (!dir) {
     throw std::runtime_error("Invalid output directory given");
   }
-  if (not m_tree) {
+  if (!m_tree) {
     throw std::runtime_error("Could not create tree");
   }
   setup_branches(std::make_index_sequence<std::tuple_size<Tuple>::value>());
@@ -183,7 +183,7 @@ struct TypeCodeIntImpl {
 };
 template<typename T, std::size_t S>
 constexpr bool is_integer_with_size_v = std::is_integral<T>::value
-                                        and (sizeof(T) == S);
+                                        && (sizeof(T) == S);
 template<typename T>
 struct TypeCode<T, typename std::enable_if_t<is_integer_with_size_v<T, 1>>>
   : TypeCodeIntImpl<T, 'b', 'B'> {};
@@ -249,14 +249,14 @@ template<typename NamedTuple>
 inline NamedTupleRootReader<NamedTuple>::NamedTupleRootReader(
   const std::string& path, const std::string& tree_name)
   : m_file(new TFile(path.c_str(), "READ")), m_tree(nullptr), m_next(0) {
-  if (not m_file) {
+  if (!m_file) {
     throw std::runtime_error("Could not open file");
   }
-  if (not m_file->IsOpen()) {
+  if (!m_file->IsOpen()) {
     throw std::runtime_error("Could not open file");
   }
   m_tree = static_cast<TTree*>(m_file->Get(tree_name.c_str()));
-  if (not m_tree) {
+  if (!m_tree) {
     throw std::runtime_error("Could not read tree");
   }
   setup_branches(std::make_index_sequence<std::tuple_size<Tuple>::value>());
@@ -268,11 +268,11 @@ inline NamedTupleRootReader<NamedTuple>::NamedTupleRootReader(
   : m_file(nullptr) // no file since it is not owned by the writer
   , m_tree(nullptr)
   , m_next(0) {
-  if (not dir) {
+  if (!dir) {
     throw std::runtime_error("Invalid input directory given");
   }
   m_tree = static_cast<TTree*>(dir->Get(tree_name.c_str()));
-  if (not m_tree) {
+  if (!m_tree) {
     throw std::runtime_error("Could not read tree");
   }
   setup_branches(std::make_index_sequence<std::tuple_size<Tuple>::value>());
