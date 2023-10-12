@@ -170,7 +170,7 @@ template<typename T, typename Compare, typename Container>
 inline void
 FlatSet<T, Compare, Container>::insert_or_assign(const T& t) {
   auto pos = std::lower_bound(m_items.begin(), m_items.end(), t, Compare());
-  if (((pos != m_items.end()) and !Compare()(t, *pos))) {
+  if (((pos != m_items.end()) && !Compare()(t, *pos))) {
     *pos = t;
   } else {
     m_items.emplace(pos, t);
@@ -184,7 +184,7 @@ FlatSet<T, Compare, Container>::find(U&& u) const {
   auto end = m_items.end();
   auto pos =
     std::lower_bound(m_items.begin(), end, std::forward<U>(u), Compare());
-  return ((pos != end) and !Compare()(std::forward<U>(u), *pos)) ? pos : end;
+  return ((pos != end) && !Compare()(std::forward<U>(u), *pos)) ? pos : end;
 }
 
 template<typename T, typename Compare, typename Container>

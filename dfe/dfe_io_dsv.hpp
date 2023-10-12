@@ -80,7 +80,7 @@ private:
   template<typename T>
   static std::enable_if_t<
     std::is_arithmetic<std::decay_t<T>>::value
-      or std::is_convertible<T, std::string>::value,
+      || std::is_convertible<T, std::string>::value,
     unsigned>
   write(T&& x, std::ostream& os);
   template<typename T, typename Allocator>
@@ -264,7 +264,7 @@ inline DsvWriter<Delimiter>::DsvWriter(
   : m_file(
     path, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc)
   , m_num_columns(columns.size()) {
-  if (not m_file.is_open() or m_file.fail()) {
+  if (!m_file.is_open() || m_file.fail()) {
     throw std::runtime_error("Could not open file '" + path + "'");
   }
   m_file.precision(precision);
@@ -308,7 +308,7 @@ DsvWriter<Delimiter>::append(Arg0&& arg0, Args&&... args) {
   }
   // write the line to disk and check that it actually happened
   m_file << line.rdbuf();
-  if (not m_file.good()) {
+  if (!m_file.good()) {
     throw std::runtime_error("Could not write data to file");
   }
 }
@@ -317,7 +317,7 @@ template<char Delimiter>
 template<typename T>
 inline std::enable_if_t<
   std::is_arithmetic<std::decay_t<T>>::value
-    or std::is_convertible<T, std::string>::value,
+    || std::is_convertible<T, std::string>::value,
   unsigned>
 DsvWriter<Delimiter>::write(T&& x, std::ostream& os) {
   os << x;
@@ -345,7 +345,7 @@ DsvWriter<Delimiter>::write(
 template<char Delimiter>
 inline DsvReader<Delimiter>::DsvReader(const std::string& path)
   : m_file(path, std::ios_base::binary | std::ios_base::in) {
-  if (not m_file.is_open() or m_file.fail()) {
+  if (!m_file.is_open() || m_file.fail()) {
     throw std::runtime_error("Could not open file '" + path + "'");
   }
 }
@@ -389,12 +389,12 @@ inline NamedTupleDsvReader<Delimiter, NamedTuple>::NamedTupleDsvReader(
   bool verify_header)
   : m_reader(path) {
   // optional columns only work if we verify the header
-  if ((not optional_columns.empty()) and (not verify_header)) {
+  if ((!optional_columns.empty()) && (!verify_header)) {
     throw std::runtime_error(
       "Optional columns can not be used without header verification");
   }
   // first line is always the header
-  if (not m_reader.read(m_columns)) {
+  if (!m_reader.read(m_columns)) {
     throw std::runtime_error("Could not read header from '" + path + "'");
   }
   if (verify_header) {
@@ -407,7 +407,7 @@ inline NamedTupleDsvReader<Delimiter, NamedTuple>::NamedTupleDsvReader(
 template<char Delimiter, typename NamedTuple>
 inline bool
 NamedTupleDsvReader<Delimiter, NamedTuple>::read(NamedTuple& record) {
-  if (not m_reader.read(m_columns)) {
+  if (!m_reader.read(m_columns)) {
     return false;
   }
   // check for consistent entries per-line
@@ -431,7 +431,7 @@ inline bool
 NamedTupleDsvReader<Delimiter, NamedTuple>::read(
   NamedTuple& record, std::vector<T>& extra) {
   // parse columns belonging to the regular record
-  if (not read(record)) {
+  if (!read(record)) {
     return false;
   }
   // parse extra columns

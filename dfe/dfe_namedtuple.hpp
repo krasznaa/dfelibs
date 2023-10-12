@@ -36,6 +36,13 @@
 #include <tuple>
 #include <utility>
 
+// Set up a helper macro for not using a GCC extension on Windows.
+#ifdef _WIN32
+#define DFE_UNUSED
+#else
+#define DFE_UNUSED __attribute__((unused))
+#endif
+
 /// Enable tuple-like access and conversion for selected class/struct members.
 ///
 /// This allows access to the selected members via `.get<I>()` or `get<I>(...)`,
@@ -79,7 +86,7 @@
     return nt.template get<I>(); \
   } \
   friend inline ::std::ostream& operator<<(::std::ostream& os, const name& nt) \
-    __attribute__((unused)) { \
+    DFE_UNUSED { \
     return ::dfe::namedtuple_impl::print_tuple( \
       os, nt.names(), nt.tuple(), \
       ::std::make_index_sequence<::std::tuple_size<Tuple>::value>{}); \
@@ -95,18 +102,18 @@ namespace namedtuple_impl {
 template<std::size_t N>
 constexpr std::array<std::string, N>
 unstringify(const char* str) {
-  assert(str and "Input string must be non-null");
+  assert(str && "Input string must be non-null");
 
   std::array<std::string, N> out;
 
   for (std::size_t idx = 0; idx < N; ++idx) {
     // skip leading whitespace
-    while ((*str != '\0') and (*str == ' ')) {
+    while ((*str != '\0') && (*str == ' ')) {
       ++str;
     }
     // find the next separator or end-of-string
     const char* sep = str;
-    while ((*sep != '\0') and (*sep != ',')) {
+    while ((*sep != '\0') && (*sep != ',')) {
       ++sep;
     }
     // store component w/o the separator

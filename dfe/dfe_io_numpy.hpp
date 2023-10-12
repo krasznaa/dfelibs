@@ -116,7 +116,7 @@ dtype_endianness_modifier() {
     char c[4];
   } x = {0x0A0B0C0D};
   bool is_little_endian =
-    (x.c[0] == 0xD) and (x.c[1] == 0xC) and (x.c[2] == 0xB) and (x.c[3] == 0xA);
+    (x.c[0] == 0xD) && (x.c[1] == 0xC) && (x.c[2] == 0xB) && (x.c[3] == 0xA);
   // TODO this assumes that only little and big endian exists and checks only
   // for little. maybe verify that it always is one or the other?
   return is_little_endian ? '<' : '>';
